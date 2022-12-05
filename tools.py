@@ -8,8 +8,8 @@ from httplib2 import Http
 from IPython.display import display_markdown
 
 AOC_URL ="https://adventofcode.com/2022/day/"
-PUZZLE_HTML_FILE = "./puzzle_descriptions/html%d.html"
-PUZZLE_MARKDOWN_FILE = "./puzzle_descriptions/markdown%d.md"
+PUZZLE_HTML_FILE = "./descriptions/html%d.html"
+PUZZLE_MARKDOWN_FILE = "./descriptions/markdown%d.md"
 PUZZLE_DATA_FILE = "./data/puzzle%d.dat"
 
 dbg_forcereload = True
@@ -56,7 +56,7 @@ Place your puzzle in a file %s in the data folder""" % puzzle_file
         return text
   
    
-def get_puzzle(day: int, debug=False, ) -> dict:
+def get_puzzle(day, debug=False):
     
     # article - the html
     # markdown - printable on the Ipython notebook cell
@@ -66,8 +66,14 @@ def get_puzzle(day: int, debug=False, ) -> dict:
     markdown = get_markdown(day, article)
     data = get_data(day)
     
-    display_markdown(markdown, raw=True)
-    return SimpleNamespace (**{'article':article, 'markdown':markdown, "data" : data} )
+    return SimpleNamespace (**{'day': day, 'article':article, 'markdown':markdown, "data" : data} )
+
+def show_puzzle(puzzle, debug=False) :
+    display_markdown(puzzle.markdown, raw=True)
+
+def show_puzzle_step2(puzzle, debug=False) :
+    display_markdown(puzzle.markdown, raw=True)
+    
 
 
 class AoCParser(HTMLParser):
