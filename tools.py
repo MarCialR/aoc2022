@@ -10,6 +10,8 @@ from IPython.display import display_markdown
 AOC_URL ="https://adventofcode.com/2022/day/"
 PUZZLE_HTML_FILE = "./descriptions/html%d.html"
 PUZZLE_MARKDOWN_FILE = "./descriptions/markdown%d.md"
+PUZZLE_HTML_2_FILE = "./descriptions/html%d_part2.html"
+PUZZLE_MARKDOWN_2_FILE = "./descriptions/markdown%d_part2.md"
 PUZZLE_DATA_FILE = "./data/puzzle%d.dat"
 
 dbg_forcereload = True
@@ -42,7 +44,28 @@ def get_markdown(day, article):
     markdown = parser.out
     with open(PUZZLE_MARKDOWN_FILE % day, "w") as f:
         f.write(markdown)
+
         
+def get_markdown2(puzzle):
+    if path.exists(PUZZLE_MARKDOWN_2_FILE % day):
+        with open (PUZZLE_MARKDOWN_2_FILE % day) as f:
+            return f.read()
+    print("httping")
+
+    # check if html is in place
+    if not path.exists(PUZZLE_HTML_2_FILE % day):
+        print("please place ")
+    
+    with open (PUZZLE_HTML_2_FILE % day) as f:
+        article= f.read()    
+    # generate markdown 
+    parser = AoCParser()
+    parser.feed(article)
+    print("parsing")
+    markdown = parser.out
+    with open(PUZZLE_MARKDOWN_2_FILE % day, "w") as f:
+        f.write(markdown)
+
 
 def get_data(day):
     puzzle_file = PUZZLE_DATA_FILE % day
@@ -71,7 +94,8 @@ def get_puzzle(day, debug=False):
 def show_puzzle(puzzle, debug=False) :
     display_markdown(puzzle.markdown, raw=True)
 
-def show_puzzle_step2(puzzle, debug=False) :
+def show_puzzle_step2(puzzle, debug=False):
+    markdown = get_markdown2(day)
     display_markdown(puzzle.markdown, raw=True)
     
 
