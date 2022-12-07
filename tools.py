@@ -12,7 +12,7 @@ PUZZLE_HTML_FILE = "./descriptions/html%d.html"
 PUZZLE_MARKDOWN_FILE = "./descriptions/markdown%d.md"
 PUZZLE_HTML_2_FILE = "./descriptions/html%d_part2.html"
 PUZZLE_MARKDOWN_2_FILE = "./descriptions/markdown%d_part2.md"
-PUZZLE_DATA_FILE = "./data/puzzle%d.dat"
+PUZZLE_DATA_FILE = "./data/puzzle%d.txt"
 
 dbg_forcereload = True
 
