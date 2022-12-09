@@ -7,65 +7,62 @@ from httplib2 import Http
 
 from IPython.display import display_markdown
 
-AOC_URL ="https://adventofcode.com/2022/day/"
+AOC_URL ="https://adventofcode.com/2022/day/%d"
 PUZZLE_HTML_FILE = "./descriptions/html%d.html"
-PUZZLE_MARKDOWN_FILE = "./descriptions/markdown%d.md"
-PUZZLE_HTML_2_FILE = "./descriptions/html%d_part2.html"
-PUZZLE_MARKDOWN_2_FILE = "./descriptions/markdown%d_part2.md"
 PUZZLE_DATA_FILE = "./data/puzzle%d.txt"
 
 dbg_forcereload = True
 
-def get_article(day):
+   
+def get_puzzle(day, debug=False):
+    
+    # problem_1 - markdown printable on the Ipython notebook cell
+    # data - (Puzzle inputs differ by user) 
+    #        place your puzzle input in a file named data/puzzle<day>.txt 
+    
+    problem_1 = get_problem_1(day)
+    data = get_data(day)
+    
+    return SimpleNamespace (**{'day': day, 'problem_1':problem_1, "data" : data} )
+
+def get_html(day):
     if path.exists(PUZZLE_HTML_FILE % day):
         with open (PUZZLE_HTML_FILE % day) as f:
             return f.read()
-    print("httping")
+    print("downloading html...")
     http = Http()
-    content = http.request(AOC_URL + str(day))
+    content = http.request(AOC_URL % day)
     html_content = content[1].decode()
+    with open(PUZZLE_HTML_FILE % day, "w") as f:
+        f.write(html_content)
+    return html_content
+
+def parse_article (article_html):
+    # generate markdown 
+    parser = AoCParser()
+    parser.feed(article_html)
+    return parser.out
+
+def get_problem_1(day):
+    html_content = get_html(day)
     soup = BeautifulSoup(html_content, 'html.parser')
-    for article in soup.find_all('article'):
-        html = article.prettify( formatter="html" )
-        with open(PUZZLE_HTML_FILE % day, "w") as f:
-            f.write(html)
-        return html
+    return parse_article (soup.find_all('article')[0].prettify( formatter="html" ))
     
-def get_markdown(day, article):
-    if path.exists(PUZZLE_MARKDOWN_FILE % day):
-        with open (PUZZLE_MARKDOWN_FILE % day) as f:
-            return f.read()
-    print("httping")
-
-    # generate markdown 
-    parser = AoCParser()
-    parser.feed(article)
-    print("parsing")
-    markdown = parser.out
-    with open(PUZZLE_MARKDOWN_FILE % day, "w") as f:
-        f.write(markdown)
-
         
-def get_markdown2(puzzle):
-    if path.exists(PUZZLE_MARKDOWN_2_FILE % day):
-        with open (PUZZLE_MARKDOWN_2_FILE % day) as f:
-            return f.read()
-    print("httping")
-
-    # check if html is in place
-    if not path.exists(PUZZLE_HTML_2_FILE % day):
-        print("please place ")
+def get_problem_2(puzzle):
+    if not path.exists(PUZZLE_HTML_FILE % puzzle.day):
+        print("problem 2 cannot be loaded until problem 1 is solved and the new html is copied onto " + PUZZLE_HTML_FILE % puzzle.day)
     
-    with open (PUZZLE_HTML_2_FILE % day) as f:
-        article= f.read()    
+    with open (PUZZLE_HTML_FILE % puzzle.day) as f:
+        html_content= f.read()    
     # generate markdown 
-    parser = AoCParser()
-    parser.feed(article)
-    print("parsing")
-    markdown = parser.out
-    with open(PUZZLE_MARKDOWN_2_FILE % day, "w") as f:
-        f.write(markdown)
-
+    soup = BeautifulSoup(html_content, 'html.parser')
+    try:
+        markdown = parse_article (soup.find_all('article')[1].prettify( formatter="html" ))
+        return markdown
+    except IndexError:
+        print("problem 2 cannot be loaded until problem 1 is solved and the new html is copied onto " + PUZZLE_HTML_FILE % puzzle.day)
+        
 
 def get_data(day):
     puzzle_file = PUZZLE_DATA_FILE % day
@@ -74,30 +71,18 @@ def get_data(day):
             return f.read().splitlines()
     else:
         text = """Note: Puzzle inputs differ by user
-Place your puzzle in a file %s in the data folder""" % puzzle_file
+Place your puzzle data in a file %s in the data folder""" % puzzle_file
         print(text)
         return text
-  
-   
-def get_puzzle(day, debug=False):
-    
-    # article - the html
-    # markdown - printable on the Ipython notebook cell
-    # data - (Puzzle inputs differ by user) 
-    #        place your puzzle in a file named data/puzzle<day>.dat 
-    article = get_article(day)
-    markdown = get_markdown(day, article)
-    data = get_data(day)
-    
-    return SimpleNamespace (**{'day': day, 'article':article, 'markdown':markdown, "data" : data} )
 
-def show_puzzle(puzzle, debug=False) :
-    display_markdown(puzzle.markdown, raw=True)
 
-def show_puzzle_step2(puzzle, debug=False):
-    markdown = get_markdown2(day)
-    display_markdown(puzzle.markdown, raw=True)
-    
+def show_problem_1(puzzle, debug=False) :
+    display_markdown(puzzle.problem_1, raw=True)
+
+
+def show_problem_2(puzzle, debug=False):
+    markdown = get_problem_2(puzzle)
+    display_markdown(markdown, raw=True)
 
 
 class AoCParser(HTMLParser):
