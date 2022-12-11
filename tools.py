@@ -11,7 +11,7 @@ AOC_URL ="https://adventofcode.com/2022/day/%d"
 PUZZLE_HTML_FILE = "./descriptions/html%d.html"
 PUZZLE_DATA_FILE = "./data/puzzle%d.txt"
 
-dbg_forcereload = True
+dbg_forcereload = False
 
    
 def get_puzzle(day, debug=False):
@@ -45,6 +45,7 @@ def parse_article (article_html):
 
 def get_problem_1(day):
     html_content = get_html(day)
+    print (html_content)
     soup = BeautifulSoup(html_content, 'html.parser')
     return parse_article (soup.find_all('article')[0].prettify( formatter="html" ))
     
