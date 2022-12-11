@@ -10,6 +10,7 @@ from IPython.display import display_markdown
 AOC_URL ="https://adventofcode.com/2022/day/%d"
 PUZZLE_HTML_FILE = "./descriptions/html%d.html"
 PUZZLE_DATA_FILE = "./data/puzzle%d.txt"
+PUZZLE_TEST_DATA_FILE = "./data/test%d.txt"
 
 dbg_forcereload = False
 
@@ -22,8 +23,9 @@ def get_puzzle(day, debug=False):
     
     problem_1 = get_problem_1(day)
     data = get_data(day)
+    test = get_test_data(day)
     
-    return SimpleNamespace (**{'day': day, 'problem_1':problem_1, "data" : data} )
+    return SimpleNamespace (**{'day': day, 'problem_1':problem_1, "data" : data, "test" : test} )
 
 def get_html(day):
     if path.exists(PUZZLE_HTML_FILE % day):
@@ -76,7 +78,18 @@ Place your puzzle data in a file %s in the data folder""" % puzzle_file
         print(text)
         return text
 
+def get_test_data(day):
+    puzzle_file = PUZZLE_TEST_DATA_FILE % day
+    if path.exists(puzzle_file):
+        with open (puzzle_file) as f:
+            return f.read().splitlines()
+    else:
+        text = """Note: Puzzle inputs differ by user
+Place your puzzle data in a file %s in the data folder""" % puzzle_file
+        print(text)
+        return text
 
+    
 def show_problem_1(puzzle, debug=False) :
     display_markdown(puzzle.problem_1, raw=True)
 
