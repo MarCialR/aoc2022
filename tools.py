@@ -8,7 +8,7 @@ from httplib2 import Http
 from IPython.display import display_markdown
 
 AOC_URL ="https://adventofcode.com/2022/day/%d"
-PUZZLE_HTML_FILE = "./descriptions/html%d.html"
+PUZZLE_HTML_FILE = "./descriptions/html%d.txt"
 PUZZLE_DATA_FILE = "./data/puzzle%d.txt"
 PUZZLE_TEST_DATA_FILE = "./data/test%d.txt"
 
